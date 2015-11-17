@@ -17,15 +17,14 @@ public class ThroughputUriReport {
         if (uriReport.size() == 0) {
           return 0;
         }
-        
+
         long end = uriReport.getEnd().getTime();
         long start = uriReport.getStart().getTime();
         final long duration = end - start;
-        
+
         if (duration == 0) {
           return uriReport.size(); // more than zero requests should always take at least some time. If that didn't get logged, this is the most suitable alternative.
         }
-        
-        return uriReport.size() / (duration / MILLISECONDS_IN_SECOND);
+        return (long)(uriReport.size() / ((float)duration / MILLISECONDS_IN_SECOND));
     }
 }

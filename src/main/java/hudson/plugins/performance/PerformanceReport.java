@@ -16,7 +16,7 @@ import org.xml.sax.SAXException;
 /**
  * Represents a single performance report, which consists of multiple
  * {@link UriReport}s for different URLs that was tested.
- * 
+ *
  * This object belongs under {@link PerformanceReportMap}.
  */
 public class PerformanceReport extends AbstractReport implements Serializable,
@@ -36,10 +36,10 @@ public class PerformanceReport extends AbstractReport implements Serializable,
   private PerformanceReport lastBuildReport;
 
   /**
-   * A lazy cache of all duration values of all HTTP samples in all UriReports, ordered by duration. 
+   * A lazy cache of all duration values of all HTTP samples in all UriReports, ordered by duration.
    */
   private transient List<Long> durationsSortedBySize = null;
-  
+
   /**
    * A lazy cache of all UriReports, reverse-ordered.
    */
@@ -49,17 +49,17 @@ public class PerformanceReport extends AbstractReport implements Serializable,
    * The amount of http samples that are not successful.
    */
   private int nbError = 0;
-  
+
   /**
    * The sum of summarizerErrors values from all samples;
    */
   private float summarizerErrors = 0;
-  
+
   /**
    * The amount of samples in all uriReports combined.
    */
   private int size;
-  
+
   /**
    * The duration of all samples combined, in milliseconds.
    */
@@ -69,7 +69,7 @@ public class PerformanceReport extends AbstractReport implements Serializable,
    * The size of all samples combined, in kilobytes.
    */
   private double totalSizeInKB = 0;
-  
+
   /**
    * The longest duration from all samples, or Long.MIN_VALUE when no samples where processed.
    */
@@ -79,12 +79,12 @@ public class PerformanceReport extends AbstractReport implements Serializable,
    * The shortest duration from all samples, or Long.MAX_VALUE when no samples where processed.
    */
   private long min = Long.MAX_VALUE;
-  
+
 
   public static String asStaplerURI(String uri) {
     return uri.replace("http:", "").replaceAll("/", "_");
   }
-  
+
   public void addSample(HttpSample pHttpSample) throws SAXException {
     String uri = pHttpSample.getUri();
     if (uri == null) {
@@ -98,7 +98,7 @@ public class PerformanceReport extends AbstractReport implements Serializable,
     synchronized (uriReportMap) {
       UriReport uriReport = uriReportMap.get(staplerUri);
       if (uriReport == null) {
-        uriReport = new UriReport(staplerUri, uri);
+        uriReport = new UriReport(this, staplerUri, uri);
         uriReportMap.put(staplerUri, uriReport);
       }
       uriReport.addHttpSample(pHttpSample);
@@ -107,7 +107,7 @@ public class PerformanceReport extends AbstractReport implements Serializable,
       durationsSortedBySize = null;
       uriReportsOrdered = null;
     }
-    
+
     if (!pHttpSample.isSuccessful()) {
       nbError++;
     }
@@ -143,7 +143,7 @@ public class PerformanceReport extends AbstractReport implements Serializable,
     if (size == 0) {
       return 0;
     }
-    
+
     return totalDuration / size;
   }
 
@@ -162,7 +162,7 @@ public class PerformanceReport extends AbstractReport implements Serializable,
     if (size == 0) {
       return 0;
     }
-    
+
     synchronized (uriReportMap) {
       if (durationsSortedBySize == null) {
         durationsSortedBySize = new ArrayList<Long>();
@@ -174,7 +174,7 @@ public class PerformanceReport extends AbstractReport implements Serializable,
       return durationsSortedBySize.get((int) (durationsSortedBySize.size() * percentage));
     }
   }
-   
+
   public long get90Line() {
     return getDurationAt(.9);
   }
@@ -289,10 +289,58 @@ public class PerformanceReport extends AbstractReport implements Serializable,
     return size() - lastBuildReport.size();
   }
 
+  public boolean isDisplayMedian()
+  {
+     return !buildAction.getBuild().getProject()
+               .getPublishersList().get(PerformancePublisher.class).getHideMedian();
+  }
+
+  public boolean isDisplayLine90()
+  {
+     return !buildAction.getBuild().getProject()
+               .getPublishersList().get(PerformancePublisher.class).getHideLine90();
+  }
+
+  public boolean isDisplayMinMax()
+  {
+     return !buildAction.getBuild().getProject()
+               .getPublishersList().get(PerformancePublisher.class).getHideMinMax();
+  }
+
+  public boolean isDisplayHttpCode()
+  {
+     return !buildAction.getBuild().getProject()
+               .getPublishersList().get(PerformancePublisher.class).getHideHttpCode();
+  }
+
+  public boolean isDisplayError()
+  {
+     return !buildAction.getBuild().getProject()
+               .getPublishersList().get(PerformancePublisher.class).getHideError();
+  }
+
+  public boolean isDisplayKB()
+  {
+     return !buildAction.getBuild().getProject()
+               .getPublishersList().get(PerformancePublisher.class).getHideKB();
+  }
+
+  public boolean isDisplaySamples()
+  {
+     return !buildAction.getBuild().getProject()
+               .getPublishersList().get(PerformancePublisher.class).getHideSamples();
+  }
+
+  public boolean isDisplayAverage()
+  {
+     return !buildAction.getBuild().getProject()
+               .getPublishersList().get(PerformancePublisher.class).getHideAverage();
+  }
+
   /**
    * Check if the filename of the file being parsed is being parsed by a
    * summarized parser (JMeterSummarizer).
-   * 
+   *
    * @param filename
    *          name of the file being parsed
    * @return boolean indicating usage of summarized parser
@@ -315,7 +363,7 @@ public class PerformanceReport extends AbstractReport implements Serializable,
         .equals("Iago")) {
         return true;
       }
-      
+
     }
     return false;
   }

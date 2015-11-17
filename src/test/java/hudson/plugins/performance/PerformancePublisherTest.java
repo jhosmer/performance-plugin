@@ -22,7 +22,7 @@ import static java.util.Arrays.asList;
   public class PerformancePublisherTest extends HudsonTestCase{
     public void testConfigRoundtrip() throws Exception {
         PerformancePublisher before = new PerformancePublisher(10, 20, "",0,0,0,0,0,false,"",false,false,
-                asList(new JMeterParser("**/*.jtl")),false);
+                asList(new JMeterParser("**/*.jtl")),false,false,false,false, false,false,false,false,false);
 
         FreeStyleProject p = createFreeStyleProject();
         p.getPublishersList().add(before);
@@ -59,7 +59,7 @@ import static java.util.Arrays.asList;
 		});
         p.getPublishersList().add(
                 new PerformancePublisher(0, 0, "", 0, 0, 0, 0, 0, false, "", false, false, asList(new JMeterParser(
-                        "**/*.jtl")),false));
+                        "**/*.jtl")),false,false,false,false, false,false,false,false,false));
 
 		FreeStyleBuild b = assertBuildStatusSuccess(p.scheduleBuild2(0).get());
 		PerformanceBuildAction a = b.getAction(PerformanceBuildAction.class);
@@ -90,7 +90,7 @@ import static java.util.Arrays.asList;
 		});
         p.getPublishersList().add(
                 new PerformancePublisher(0, 0, "", 0, 0, 0, 0, 0, false, "", false, false, asList(new JMeterParser(
-                        "${JOB_NAME}/*.jtl")),false));
+                        "${JOB_NAME}/*.jtl")),false,false,false,false, false,false,false,false,false));
 
 		FreeStyleBuild b = assertBuildStatusSuccess(p.scheduleBuild2(0).get());
 		PerformanceBuildAction a = b.getAction(PerformanceBuildAction.class);
@@ -105,9 +105,9 @@ import static java.util.Arrays.asList;
         catch(Exception e){
             e.printStackTrace();
         }
-        
+
     }
-    
+
     public void testBuildUnstableResponseThreshold() throws Exception {
         FreeStyleProject p = createFreeStyleProject("TestJob");
         p.getBuildersList().add(new TestBuilder() {
@@ -122,7 +122,7 @@ import static java.util.Arrays.asList;
         });
         p.getPublishersList().add(
                 new PerformancePublisher(0, 0, "test.jtl:100", 0, 0, 0, 0, 0, false, "", false, false, asList(new JMeterParser(
-                        "**/*.jtl")),false));
+                        "**/*.jtl")),false,false,false,false, false,false,false,false,false));
 
         FreeStyleBuild b = assertBuildStatus(Result.UNSTABLE, p.scheduleBuild2(0).get());
         PerformanceBuildAction a = b.getAction(PerformanceBuildAction.class);
@@ -154,7 +154,7 @@ import static java.util.Arrays.asList;
         });
         p.getPublishersList().add(
                 new PerformancePublisher(0, 0, "test.jtl:5000", 0, 0, 0, 0, 0, false, "", false, false, asList(new JMeterParser(
-                        "**/*.jtl")),false));
+                        "**/*.jtl")),false,false,false,false, false,false,false,false,false));
 
         FreeStyleBuild b = assertBuildStatusSuccess(p.scheduleBuild2(0).get());
         PerformanceBuildAction a = b.getAction(PerformanceBuildAction.class);
@@ -184,7 +184,7 @@ import static java.util.Arrays.asList;
 
         p.getPublishersList().add(
                 new PerformancePublisher(0, 0, null, 100.0d, 0, 50.0d, 0, 0, false, "ART", true, true, asList(new JUnitParser(
-                        "**/*.xml")), false));
+                        "**/*.xml")), false,false,false,false, false,false,false,false,false));
         // first build
         p.getBuildersList().add(new TestBuilder() {
             @Override

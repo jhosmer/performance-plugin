@@ -10,6 +10,45 @@
     <f:booleanRadio name="modeOfThreshold" field="modeOfThreshold" true="Relative Threshold" false="Error Threshold" />
   </f:entry>
 
+    <f:entry title="${%Report settings:}">
+    <table width="600px">
+    <tbody>
+      <tr>
+        <td>
+          <f:checkbox title="Hide Samples columns" field="hideSamples" />
+        </td>
+       <td>
+          <f:checkbox title="Hide Http Code columns" field="hideHttpCode" />
+        </td>
+      </tr>
+     <tr>
+        <td>
+          <f:checkbox  title="Hide Average columns" field="hideAverage" />
+        </td>
+       <td>
+          <f:checkbox  title="Hide Error columns" field="hideError" />
+        </td>
+      </tr>
+     <tr>
+        <td>
+          <f:checkbox title="Hide Line90 column" field="hideLine90" />
+        </td>
+       <td>
+          <f:checkbox title="Hide Total and Average KB columns" field="hideKB" />
+        </td>
+      </tr>
+     <tr>
+        <td>
+          <f:checkbox title="Hide Min and Max columns" field="hideMinMax" />
+        </td>
+        <td>
+          <f:checkbox title="Hide Median columns" field="hideMedian" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  </f:entry>
+
   <f:block>
     <f:entry title="Use Error thresholds on single build:   ">
       <table width="500px">

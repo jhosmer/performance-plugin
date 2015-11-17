@@ -132,6 +132,14 @@ public class PerformancePublisher extends Recorder {
 
   private boolean modeThroughput;
 
+  private boolean hideMedian;
+  private boolean hideSamples;
+  private boolean hideAverage;
+  private boolean hideLine90;
+  private boolean hideMinMax;
+  private boolean hideHttpCode;
+  private boolean hideError;
+  private boolean hideKB;
 
   @DataBoundConstructor
   public PerformancePublisher(int errorFailedThreshold,
@@ -147,7 +155,15 @@ public class PerformancePublisher extends Recorder {
                             boolean modeOfThreshold,
                             boolean compareBuildPrevious,
                             List<? extends PerformanceReportParser> parsers,
-                            boolean modeThroughput) {
+                            boolean modeThroughput,
+                            boolean hideSamples,
+                            boolean hideAverage,
+                            boolean hideMedian,
+                            boolean hideLine90,
+                            boolean hideMinMax,
+                            boolean hideHttpCode,
+                            boolean hideError,
+                            boolean hideKB) {
 
     this.errorFailedThreshold = errorFailedThreshold;
     this.errorUnstableThreshold = errorUnstableThreshold;
@@ -158,6 +174,14 @@ public class PerformancePublisher extends Recorder {
     this.relativeUnstableThresholdPositive = relativeUnstableThresholdPositive;
     this.relativeUnstableThresholdNegative = relativeUnstableThresholdNegative;
 
+    this.hideSamples = hideSamples;
+    this.hideMedian = hideMedian;
+    this.hideAverage = hideAverage;
+    this.hideLine90 = hideLine90;
+    this.hideMinMax = hideMinMax;
+    this.hideHttpCode = hideHttpCode;
+    this.hideError = hideError;
+    this.hideKB = hideKB;
     this.nthBuildNumber = nthBuildNumber;
     this.configType = comparisonType;
     PerformancePublisher.optionType = comparisonType;
@@ -234,8 +258,8 @@ public class PerformancePublisher extends Recorder {
     //Agoley : Possible fix, if we specify more than one result file pattern
     try {
       String parts[] = includes.split("\\s*[;:,]+\\s*");
-      
-      
+
+
       List<FilePath> files = new ArrayList<FilePath>();
         for (String path : parts) {
           FilePath[] ret = workspace.list(path);
@@ -263,9 +287,9 @@ public class PerformancePublisher extends Recorder {
       }
     }
     if (!files.isEmpty()) return files;
-    
+
     //give up and just try direct matching on string
-    File directFile = new File(includes); 
+    File directFile = new File(includes);
     if(directFile.exists()) files.add(new FilePath(directFile));
     return files;
   }
@@ -992,6 +1016,40 @@ public class PerformancePublisher extends Recorder {
 
   public boolean getModeRelativeThresholds() {
     return modeRelativeThresholds;
+  }
+
+
+  public boolean getHideSamples() {
+    return hideSamples;
+  }
+
+  public boolean getHideAverage() {
+       return hideAverage;
+  }
+
+  public boolean getHideMedian() {
+       return hideMedian;
+  }
+
+
+  public boolean getHideHttpCode() {
+       return hideHttpCode;
+  }
+
+  public boolean getHideLine90() {
+       return hideLine90;
+  }
+
+  public boolean getHideMinMax() {
+       return hideMinMax;
+  }
+
+  public boolean getHideKB() {
+       return hideKB;
+  }
+
+  public boolean getHideError() {
+       return hideError;
   }
 
   public boolean isModeThroughput() {

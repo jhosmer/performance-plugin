@@ -34,7 +34,7 @@ public class JMeterCsvParser extends AbstractParser {
     String[] fields = pattern.split(delimiter);
     for (int i = 0; i < fields.length; i++) {
       String field = fields[i];
-      if ("timestamp".equals(field)) {
+      if ("timeStamp".equals(field)) {
         timestampIdx = i;
       } else if ("elapsed".equals(field)) {
         elapsedIdx = i;
@@ -72,7 +72,7 @@ public class JMeterCsvParser extends AbstractParser {
         FormValidation.error(Messages.CsvParser_validation_patternEmpty());
       }
       Set<String> missing = new HashSet<String>();
-      validatePresent(missing, pattern, "timestamp");
+      validatePresent(missing, pattern, "timeStamp");
       validatePresent(missing, pattern, "elapsed");
       validatePresent(missing, pattern, "responseCode");
       validatePresent(missing, pattern, "success");
@@ -106,14 +106,14 @@ public class JMeterCsvParser extends AbstractParser {
   // This may be unnecessary. I tried many things getting the pattern to show up
   // correctly in the UI and this was one of them.
   public String getDefaultPattern() {
-    return "timestamp,elapsed,responseCode,threadName,success,failureMessage,grpThreads,allThreads,URL,Latency,SampleCount,ErrorCount";
+    return "timeStamp,elapsed,URL,responseCode,responseMessage,threadName,success,bytes,allThreads,Latency,Connect";
   }
 
   @Override
   PerformanceReport parse(File reportFile) throws Exception {
     final PerformanceReport report = new PerformanceReport();
     report.setReportFileName(reportFile.getName());
-    
+
     final BufferedReader reader = new BufferedReader(new FileReader(reportFile));
     try {
       String line = reader.readLine();
@@ -131,7 +131,7 @@ public class JMeterCsvParser extends AbstractParser {
         }
         line = reader.readLine();
       }
-      
+
       return report;
     } finally {
       if (reader != null) {
@@ -142,7 +142,7 @@ public class JMeterCsvParser extends AbstractParser {
 
   /**
    * Parses a single HttpSample instance from a single CSV line.
-   * 
+   *
    * @param line
    *          file line with the provided pattern (cannot be null).
    * @return An sample instance (never null).
@@ -154,7 +154,7 @@ public class JMeterCsvParser extends AbstractParser {
     sample.setDate(new Date(Long.valueOf(values[timestampIdx])));
     sample.setDuration(Long.valueOf(values[elapsedIdx]));
     sample.setHttpCode(values[responseCodeIdx]);
-    sample.setSuccessful(Boolean.valueOf(values[successIdx]));
+    sample.setSuccessful(new Boolean(Integer.valueOf(values[successIdx])==1));
     sample.setUri(values[urlIdx]);
     return sample;
   }

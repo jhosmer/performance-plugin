@@ -19,16 +19,15 @@
          <j:forEach var="uriReport" items="${performanceReport.getUriListOrdered()}">
            <tr class="${h.ifThenElse(uriReport.failed,'red','')}">
              <td class="left">
-               <a href="./uriReport/${uriReport.encodeUriReport()}">
-               <st:out value="${uriReport.getShortUri()}" />
-               </a>
+               <st:out value="${uriReport.getStaplerUri()}" />
+               <!-- <a href="./uriReport/${uriReport.encodeUriReport()}"><st:out value="${uriReport.getShortUri()}" /></a> -->
              </td>
            <j:choose>
              <j:when test="${performanceReport.ifSummarizerParserUsed(performanceReport.getReportFileName())}">
                <jm:summaryTableSummarizer it="${uriReport}" />
              </j:when>
              <j:otherwise>
-               <jm:summaryTable it="${uriReport}" />
+               <jm:summaryTable it="${uriReport}" performanceReport="${performanceReport}"/>
              </j:otherwise>
            </j:choose>
            </tr>
@@ -37,14 +36,14 @@
            <j:when test="${performanceReport.ifSummarizerParserUsed(performanceReport.getReportFileName())}">
            </j:when>
            <j:otherwise>
-            <tr class="bold">
+            <tr class="sortbottom bold">
               <td class="left bold">${%All URIs}</td>
               <jm:summaryTable it="${performanceReport}" />
             </tr>
            </j:otherwise>
           </j:choose>
         </table>
-      </j:forEach> 
+      </j:forEach>
     </l:main-panel>
   </l:layout>
 </j:jelly>
